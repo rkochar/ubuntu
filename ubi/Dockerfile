@@ -1,13 +1,15 @@
-FROM ubuntu:24.04
+FROM redhat/ubi9-micro:9.4
 
-RUN apt update \
-    && apt install -y ca-certificates curl xz-utils \
-    && /sbin/useradd -m nixuser \ 
+RUN dnf update \
+    && dnf install --assumeyes --allowerasing curl xz \
+    && useradd -m nixuser \
     && mkdir /nix \
     && chown nixuser /nix \
-    && apt clean
+    && dnf clean all
 
 USER nixuser
 ENV USER=nixuser
 ENV PATH="/home/nixuser/.nix-profile/bin:${PATH}"
 RUN curl -sL https://nixos.org/nix/install | sh -s -- --no-daemon
+
+RUN nix
